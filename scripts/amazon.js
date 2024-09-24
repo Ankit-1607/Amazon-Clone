@@ -1,5 +1,5 @@
 // to generate HTML for the products
-import { cart } from "../data/cart.js";
+import { cart , addToCart} from "../data/cart.js";
 import { products } from "../data/products.js";
 
 let productsHTML = '';
@@ -63,33 +63,14 @@ let timeoutID; // a global scope variable to store setTimeout() id which is used
 
 // making Add to cart button responsive
 document.querySelectorAll('.js-add-to-cart')
-// using product-id and not name because more than 1 product can have same name ...but can be from different brands
+// using product-id and not name because more than 1 product can have same name...but can be from different brands
 .forEach((addToCartButton) => {
   addToCartButton.addEventListener('click',() => {
-    const productId = addToCartButton.dataset.productId;
+    const productId = addToCartButton.dataset.productId;    
 
-    let matchingItem;
+    addToCart(productId);
+    updateCartQuantity();
 
-    cart.forEach((item) => {
-      if(productId === item.productId){
-        matchingItem = item;
-      }
-    });
-
-    if(matchingItem){
-      matchingItem.quantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-    }else{
-      cart.push({
-        productId:productId,
-        quantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value)
-      });
-    }    
-    console.log(cart);
-    let cartQuantity = 0;
-    cart.forEach((item) => {
-      cartQuantity += item.quantity;
-    })
-    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
     // making 'added' visible and then invisible after 2 seconds
     document.querySelector(`.js-added-to-cart-${productId}`).classList.add('js-added-to-cart-visible');
 
@@ -101,3 +82,13 @@ document.querySelectorAll('.js-add-to-cart')
     },2000);
   })
 })
+
+// to update cart quantity
+function updateCartQuantity(){
+  let cartQuantity = 0;
+
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  })
+  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;  
+}
