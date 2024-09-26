@@ -83,7 +83,7 @@ document.querySelectorAll('.js-add-to-cart')
   })
 })
 
-// to update cart quantity
+// to update cart quantity on main page
 function updateCartQuantity(){
   let cartQuantity = 0;
 
@@ -92,3 +92,4 @@ function updateCartQuantity(){
   })
   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;  
 }
+updateCartQuantity();

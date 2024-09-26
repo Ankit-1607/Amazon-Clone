@@ -1,12 +1,7 @@
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
 if(!cart){
-  cart = [{
-    productId:'15b6fc6f-327a-4ec4-896f-486349e85a3d',
-    quantity:1,
-    deliveryOptionId:'2'},{productId:'83d4ca15-0f35-48f5-b7a3-1ea210004f2e',
-    quantity:2,
-    deliveryOptionId:'3'}]; // if cart is NULL,i.e.,nothing in local storage,since JS cant perform all our actions(updation and stuff) on NULL value
+  cart = []; // if cart is NULL,i.e.,nothing in local storage,since JS cant perform all our actions(updation and stuff) on NULL value
 }
 
 // storing cart in local storage
@@ -46,6 +41,21 @@ export function removeFromCart(productId){
   })
 
   cart = newCart;
+
+  saveToStorage();
+}
+
+// updates delivery option in the cart
+export function updateDeliveryOption(productId , deliveryOptionId){
+  let matchingItem;
+
+  cart.forEach((cartItem) => {
+    if(productId === cartItem.productId){
+      matchingItem = cartItem;
+    }
+  });
+
+  matchingItem.deliveryOptionId = deliveryOptionId;
 
   saveToStorage();
 }
