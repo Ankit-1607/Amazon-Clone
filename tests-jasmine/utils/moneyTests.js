@@ -1,4 +1,4 @@
-import { formatCurrency } from "../scripts/utils/money.js";
+import { formatCurrency } from "../../scripts/utils/money.js";
 
 //describe takes 1st param to name a test and 2nd param to know what it does
 describe('test suite: formatCurrency',() => {
