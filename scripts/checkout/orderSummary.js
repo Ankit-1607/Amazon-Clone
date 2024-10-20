@@ -4,6 +4,7 @@ import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import { deliveryOptions, getDeliveryOption} from "../../data/deliveryOptions.js"; 
 import { renderpaymentSummary } from "./paymentSummary.js";
 import { formatCurrency } from "../utils/money.js";
+import { loadProducts } from "../../data/products.js";
 
 export function renderOrderSummary(){
 
