@@ -95,7 +95,9 @@ export function loadProductsFetch() {
     });
     console.log('loaded products');
 
-  });
+  })/* .catch((error) => { // catches error
+    console.log('unexpected error. Please try again later')
+  });*/
 
   return promise;
 }
@@ -122,6 +124,11 @@ export function loadProducts(fun) {
     console.log('loaded products');
 
     fun();
+  })
+
+  // handling errors
+  xhr.addEventListener('error', (error) => {
+    console.log('unexpected error. Please try again later')
   })
 
   xhr.send(); // asynchronous code,i.e.,doesn't wait for the response(in this case)

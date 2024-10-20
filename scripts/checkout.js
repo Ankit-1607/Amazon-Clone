@@ -6,9 +6,16 @@ import { renderpaymentSummary } from "./checkout/paymentSummary.js";
 import { loadProducts, loadProductsFetch } from "../data/products.js";
 
 async function loadPage() {
-  console.log('load page');
+  try {
+    // throw 'error1' // creates an error
+    console.log('load page');
 
-  await loadProductsFetch();
+    await loadProductsFetch();
+  } catch(error) {
+    console.log('unexpected error. Please try again later');
+    console.log(error);
+  }
+  
 
   renderOrderSummary();
   renderpaymentSummary();
