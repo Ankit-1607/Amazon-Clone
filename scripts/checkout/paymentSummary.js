@@ -21,7 +21,7 @@ export function renderpaymentSummary(){
   const taxCents = totalBeforeTaxCents * 0.1;
 
   const totalCents = totalBeforeTaxCents + taxCents;
-
+  // dynamic html generation for 
   const paymentSummary = `
     <div class="payment-summary-title">
       Order Summary
@@ -52,10 +52,16 @@ export function renderpaymentSummary(){
       <div class="payment-summary-money">$${formatCurrency(totalCents)}</div>
     </div>
 
-    <button class="place-order-button button-primary">
+    <button class="place-order-button button-primary
+      js-place-order">
       Place your order
     </button>
   `;
 
   document.querySelector('.js-payment-summary').innerHTML = paymentSummary;
+
+  document.querySelector('.js-place-order').
+    addEventListener('click',() => {
+      window.location.href = 'orders.html';
+    })
 }

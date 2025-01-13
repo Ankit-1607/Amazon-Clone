@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Amazon Project</title>
-
-    <!-- This code is needed for responsive design to work.
-      (Responsive design = make the website look good on
-      smaller screen sizes like a phone or a tablet). -->
+    <title>Amazon-Clone</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Loading Roboto font from Google Fonts. -->
@@ -18,12 +14,15 @@
     <link rel="stylesheet" href="styles/shared/amazon-header.css">
     <link rel="stylesheet" href="styles/pages/amazon.css">
   </head>
+
   <body>
     <div class="amazon-header">
       <div class="amazon-header-left-section">
         <a href="amazon.html" class="header-link">
+          <!-- Desktop version -->
           <img class="amazon-logo"
             src="images/amazon-logo-white.png">
+          <!-- for responsive design -->
           <img class="amazon-mobile-logo"
             src="images/amazon-mobile-logo-white.png">
         </a>
@@ -38,11 +37,12 @@
       </div>
 
       <div class="amazon-header-right-section">
+        <!-- check previous orders from here -->
         <a class="orders-link header-link" href="orders.html">
           <span class="returns-text">Returns</span>
           <span class="orders-text">& Orders</span>
         </a>
-
+        <!-- check your cart -->
         <a class="cart-link header-link" href="checkout.html">
           <img class="cart-icon" src="images/icons/cart-icon.png">
           <div class="cart-quantity js-cart-quantity">0</div>
@@ -53,11 +53,9 @@
     
     <div class="main">
       <div class="products-grid js-products-grid">
-        <!-- products generated using accumulator pattern method in js -->
+        <!-- dynamic product list generation using JS -->
       </div>
     </div>
-
-    <!-- scripts elements are loaded one by one -->
 
     <script type="module" src="scripts/amazon.js"></script>
   </body>
