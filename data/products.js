@@ -32,7 +32,7 @@ class Product {
   }
 
   getPrice() {
-    return `$${formatCurrency(this.priceCents)}`;
+    return `₹${this.priceCents}`;
   }
 
   extraInfoHTML(){
@@ -77,10 +77,10 @@ class Clothing extends Product{
 
 export let products = [];
 
-
+// for cart page
 export function loadProductsFetch() {
   const promise = fetch(
-    'https://supersimplebackend.dev/products'
+    '../backend/products.json' // using our own file as backend
   ).then((response) => {
     // console.log(response);
     return response.json(); // gives data attached to response,is asynchronous-is a promise
@@ -93,7 +93,7 @@ export function loadProductsFetch() {
         return new Product(productDetails);
       }
     });
-    console.log('loaded products');
+    // console.log('loaded products');
 
   })/* .catch((error) => { // catches error
     console.log('unexpected error. Please try again later')
@@ -109,30 +109,49 @@ loadProductsFetch().then(() => {
 });
 */
 
+// for home screen
 export function loadProducts(fun) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET','https://supersimplebackend.dev/products');
-
-  xhr.addEventListener('load', () => {
-    products = JSON.parse(xhr.response).map((productDetails) => {
-      if(productDetails.type === 'clothing'){
-        return new Clothing(productDetails);
-      } else {
-        return new Product(productDetails);
-      }
+  fetch('https://supersimplebackend.dev/products')
+    .then((response) => response.json()) // fetch returns raw data in form of Readable stream as in byte sequence - for simple transmission 
+    .then((data) => {
+      products = data.map((productDetails) => {
+        if(productDetails.type === 'clothing'){
+          return new Clothing(productDetails);
+        } else {
+          return new Product(productDetails);
+        }});
+      console.log('loaded products');
+      fun();
+    })
+    .catch((error) => {
+      console.log('unexpected error. Please try again later');
     });
-    console.log('loaded products');
-
-    fun();
-  })
-
-  // handling errors
-  xhr.addEventListener('error', (error) => {
-    console.log('unexpected error. Please try again later')
-  })
-
-  xhr.send(); // asynchronous code,i.e.,doesn't wait for the response(in this case)
 }
+
+// export function loadProducts(fun) {
+//   const xhr = new XMLHttpRequest();
+//   xhr.open('GET','https://supersimplebackend.dev/products');
+
+//   xhr.addEventListener('load', () => {
+//     products = JSON.parse(xhr.response).map((productDetails) => {
+//       if(productDetails.type === 'clothing'){
+//         return new Clothing(productDetails);
+//       } else {
+//         return new Product(productDetails);
+//       }
+//     });
+//     console.log('loaded products');
+
+//     fun();
+//   })
+
+//   // handling errors
+//   xhr.addEventListener('error', (error) => {
+//     console.log('unexpected error. Please try again later')
+//   })
+
+//   xhr.send(); // asynchronous code,i.e.,doesn't wait for the response(in this case)
+// }
 // loadProducts();
 
 

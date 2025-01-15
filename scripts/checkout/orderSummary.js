@@ -1,31 +1,24 @@
-import {cart, removeFromCart, updateDeliveryOption} from "../../data/cart.js";
+import {cart, removeFromCart, updateCartQuantity, updateDeliveryOption} from "../../data/cart.js";
 import {products,getProduct} from "../../data/products.js";
-import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 import { deliveryOptions, getDeliveryOption} from "../../data/deliveryOptions.js"; 
 import { renderpaymentSummary } from "./paymentSummary.js";
-import { formatCurrency } from "../utils/money.js";
+import {getDeliveryDate} from "../utils/deliveryDate.js"
 import { loadProducts } from "../../data/products.js";
 
 export function renderOrderSummary(){
 
   let cartSummaryHTML = '';
-
+  // iterate thru items present in cart
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
 
-    const matchingProduct = getProduct(productId);
+    const matchingProduct = getProduct(productId); // finding item's object from product array
 
     const deliveryOptionId = cartItem.deliveryOptionId;
 
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const today = dayjs();
-    const deliveryDate = today.add(
-      deliveryOption.deliveryDays,'days'
-    );
-    const dateString = deliveryDate.format(
-      'dddd, MMMM D'
-    );
+    const dateString = getDeliveryDate(deliveryOption.deliveryDays);
 
     cartSummaryHTML += `
     <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
@@ -71,15 +64,10 @@ export function renderOrderSummary(){
     let html = '';
 
     deliveryOptions.forEach((deliveryOption) => {
-      const today = dayjs();
-      const deliveryDate = today.add(
-        deliveryOption.deliveryDays,'days'
-      );
-      const dateString = deliveryDate.format(
-        'dddd, MMMM D'
-      );
-      
-      const priceString = (deliveryOption.priceCents === 0) ? 'FREE' : `$${formatCurrency(deliveryOption.priceCents)} - `;
+
+      const dateString = getDeliveryDate(deliveryOption.deliveryDays);
+
+      const priceString = (deliveryOption.priceCents === 0) ? 'FREE' : `₹${deliveryOption.priceCents} - `;
 
       const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
 
@@ -110,21 +98,51 @@ export function renderOrderSummary(){
   document.querySelectorAll('.js-delete-link').forEach((link) => {
     link.addEventListener('click',() => {
 
-      removeFromCart(link.dataset.productId);
+      removeFromCart(link.dataset.productId); // using data atribute to delete the item
 
       const container = document.querySelector(`.js-cart-item-container-${link.dataset.productId}`);
-      container.remove();
 
+      container.remove(); /* this removes the referenced element from DOM...it's a DOM method
+      and DOM automatically adjusts itself for other elements...so need to explicitly call renderOrderSummary() */
+      
+      console.log("delete link clicked");
+      // renderOrderSummary();
+      cartQuantitySummaryText();
       renderpaymentSummary();
+      cartPageTitle();
     })
   })
 
   document.querySelectorAll('.js-delivery-option').forEach((element) => {
     element.addEventListener('click' , () => {
-      const {productId , deliveryOptionId} = element.dataset;
+      const {productId , deliveryOptionId} = element.dataset; // destructuring
       updateDeliveryOption(productId,deliveryOptionId);
       renderOrderSummary(); // regenerates all the html for smoother looking refresh
       renderpaymentSummary();
+      cartQuantitySummaryText();
+      cartPageTitle();
     })
   })
+  cartQuantitySummaryText();
+  cartPageTitle();
+}
+
+function cartQuantitySummaryText() {
+  const numOfItems = updateCartQuantity();
+  if(numOfItems == 0) {
+    document.querySelector(".js-card-quantity-summary").innerHTML = "No items";
+  } else if(numOfItems == 1) {
+    document.querySelector(".js-card-quantity-summary").innerHTML = "1 item";
+  } else {
+    document.querySelector(".js-card-quantity-summary").innerHTML = `${numOfItems} items`;
+  }
+}
+
+function cartPageTitle() {
+  const numOfItems = updateCartQuantity();
+  if(numOfItems == 0) {
+    document.querySelector(".js-page-title").innerHTML = "Your Amazon Clone Cart is empty";
+  } else {
+    document.querySelector(".js-page-title").innerHTML = "Review your Cart";
+  }
 }

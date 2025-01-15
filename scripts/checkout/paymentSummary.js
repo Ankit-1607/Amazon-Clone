@@ -1,7 +1,8 @@
-import {cart} from "../../data/cart.js";
+import {cart, updateCartQuantity } from "../../data/cart.js";
 import {products,getProduct} from "../../data/products.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
-import { formatCurrency } from "../utils/money.js";
+import { addToPreviousOrders } from "../../data/previous-products.js";
+
 
 export function renderpaymentSummary(){
   let productPriceCents = 0;
@@ -28,28 +29,28 @@ export function renderpaymentSummary(){
     </div>
 
     <div class="payment-summary-row">
-      <div>Items (3):</div>
-      <div class="payment-summary-money">$${formatCurrency(productPriceCents)}</div>
+      <div>Items (${updateCartQuantity()}):</div>
+      <div class="payment-summary-money">₹${productPriceCents}</div>
     </div>
 
     <div class="payment-summary-row">
       <div>Shipping &amp; handling:</div>
-      <div class="payment-summary-money">$${formatCurrency(shippingPriceCents)}</div>
+      <div class="payment-summary-money">₹${shippingPriceCents}</div>
     </div>
 
     <div class="payment-summary-row subtotal-row">
       <div>Total before tax:</div>
-      <div class="payment-summary-money">$${formatCurrency(totalBeforeTaxCents)}</div>
+      <div class="payment-summary-money">₹${totalBeforeTaxCents}</div>
     </div>
 
     <div class="payment-summary-row">
       <div>Estimated tax (10%):</div>
-      <div class="payment-summary-money">$${formatCurrency(taxCents)}</div>
+      <div class="payment-summary-money">₹${taxCents}</div>
     </div>
 
     <div class="payment-summary-row total-row">
       <div>Order total:</div>
-      <div class="payment-summary-money">$${formatCurrency(totalCents)}</div>
+      <div class="payment-summary-money">₹${totalCents}</div>
     </div>
 
     <button class="place-order-button button-primary
@@ -62,6 +63,7 @@ export function renderpaymentSummary(){
 
   document.querySelector('.js-place-order').
     addEventListener('click',() => {
+      // cart = [];
       window.location.href = 'orders.html';
     })
 }

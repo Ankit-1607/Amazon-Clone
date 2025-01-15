@@ -6,9 +6,10 @@ import { renderpaymentSummary } from "./checkout/paymentSummary.js";
 import { loadProducts, loadProductsFetch } from "../data/products.js";
 
 async function loadPage() {
+  // trying to simulate page load delay
   try {
     // throw 'error1' // creates an error
-    console.log('load page');
+    // console.log('load page');
 
     await loadProductsFetch();
   } catch(error) {
@@ -23,8 +24,8 @@ async function loadPage() {
   return 'value2';
 }
 loadPage().then((value) => {
-  console.log('next step - 2');
-  console.log(value);
+  // console.log('next step - 2');
+  // console.log(value);
 });
 
 // new Promise((resolve) => {

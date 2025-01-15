@@ -1,8 +1,7 @@
 // to generate HTML for the products
 import { cart , addToCart} from "../data/cart.js";
 import { products, loadProducts } from "../data/products.js";
-import { formatCurrency } from "./utils/money.js";
-
+import { updateCartQuantity } from "../data/cart.js";
 
 loadProducts(renderProductGrid);
 
@@ -67,38 +66,42 @@ function renderProductGrid() {
   })
   document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-  let timeoutID; // a global scope variable to store setTimeout() id which is used to restore the timer for disappearing of the message
-
+  // let timeoutID; // a global scope variable to store setTimeout() id which is used to restore the timer for disappearing of the message
+  
   // making Add to cart button responsive
   document.querySelectorAll('.js-add-to-cart')
   // using product-id and not name because more than 1 product can have same name...but can be from different brands
   .forEach((addToCartButton) => {
     addToCartButton.addEventListener('click',() => {
-      const productId = addToCartButton.dataset.productId;    
-
-      addToCart(productId);
-      updateCartQuantity();
+      const productId = addToCartButton.dataset.productId; // dataset defined in Add to Cart button attributes 
+      // runs after item added to cart
+      addToCart(productId); 
+      document.querySelector('.js-cart-quantity').innerHTML = updateCartQuantity();
 
       // making 'added' visible and then invisible after 2 seconds
       document.querySelector(`.js-added-to-cart-${productId}`).classList.add('js-added-to-cart-visible');
-
+      let timeoutID;
       // timer reloads for disappearing of added message
-      clearTimeout(timeoutID);
 
-      timeoutID = setTimeout(() => {
-        document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible')
-      },2000);
+
+      // timeoutID = setTimeout(() => {
+      //   document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible')
+      // },2000);
+      setTimeout(() => {
+          document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible');
+          clearTimeout(timeoutID);
+        },2000);
     })
   })
-
-  // to update cart quantity on main page
-  function updateCartQuantity(){
-    let cartQuantity = 0;
-
-    cart.forEach((cartItem) => {
-      cartQuantity += cartItem.quantity;
-    })
-    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;  
-  }
-  updateCartQuantity();
+  document.querySelector('.js-cart-quantity').innerHTML = updateCartQuantity();
 }
+
+
+// export function updateCartQuantity(){
+//   let cartQuantity = 0;
+
+//   cart.forEach((cartItem) => {
+//     cartQuantity += cartItem.quantity;
+//   })
+//   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;  
+// }
