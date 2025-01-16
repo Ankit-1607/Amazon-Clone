@@ -5,7 +5,7 @@ if(!cart){
 }
 
 // storing cart in local storage
-function saveToStorage(){
+export function saveToStorage(){
   localStorage.setItem('cart',JSON.stringify(cart));
 }
 
@@ -70,6 +70,13 @@ export function updateCartQuantity(){
     cartQuantity += cartItem.quantity;
   })
 
-  console.log("Cart Updated");
   return cartQuantity;
+}
+
+export function emptyTheCart() {
+  cart.splice(0, cart.length);
+}
+
+export function isCartEmpty() {
+  return (cart.length == 0) ? true:false;
 }

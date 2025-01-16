@@ -66,8 +66,6 @@ function renderProductGrid() {
   })
   document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-  // let timeoutID; // a global scope variable to store setTimeout() id which is used to restore the timer for disappearing of the message
-  
   // making Add to cart button responsive
   document.querySelectorAll('.js-add-to-cart')
   // using product-id and not name because more than 1 product can have same name...but can be from different brands
@@ -80,13 +78,9 @@ function renderProductGrid() {
 
       // making 'added' visible and then invisible after 2 seconds
       document.querySelector(`.js-added-to-cart-${productId}`).classList.add('js-added-to-cart-visible');
+      
       let timeoutID;
-      // timer reloads for disappearing of added message
-
-
-      // timeoutID = setTimeout(() => {
-      //   document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible')
-      // },2000);
+      // timer starts for disappearing of added message
       setTimeout(() => {
           document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible');
           clearTimeout(timeoutID);

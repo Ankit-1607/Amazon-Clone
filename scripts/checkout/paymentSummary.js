@@ -1,7 +1,8 @@
-import {cart, updateCartQuantity } from "../../data/cart.js";
+import {cart, emptyTheCart, isCartEmpty, saveToStorage, updateCartQuantity } from "../../data/cart.js";
 import {products,getProduct} from "../../data/products.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
 import { addToPreviousOrders } from "../../data/previous-products.js";
+import { myCurrentOrder } from "../../data/myOrder.js";
 
 
 export function renderpaymentSummary(){
@@ -63,7 +64,32 @@ export function renderpaymentSummary(){
 
   document.querySelector('.js-place-order').
     addEventListener('click',() => {
-      // cart = [];
+      if (isCartEmpty()) {
+        // if user tries to place an order without adding items to cart
+        if (!document.querySelector('.js-text-message-container')) {  // Checks if message is already displayed
+
+          const textMessageContainer = document.createElement('div'); // container for text message
+          textMessageContainer.classList.add('js-text-message-container');
+
+          const textMessage = document.createElement('span'); // text message holder
+          textMessage.innerHTML = "Kindly add items to cart to place an order";
+          
+          textMessageContainer.appendChild(textMessage); // add text holder to container
+          
+          document.querySelector('.message-to-user').appendChild(textMessageContainer); // add container to page
+          
+          setTimeout(() => { // Remove the container and message after 4 seconds
+            textMessageContainer.remove();
+          }, 4000);
+        }
+        return;
+      }
+      
+      myCurrentOrder(cart, totalCents);
+      addToPreviousOrders();
+      // when order is placed cart becomes empty and all the items move to orders
+      emptyTheCart();
+      saveToStorage();
       window.location.href = 'orders.html';
     })
 }

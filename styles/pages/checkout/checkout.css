@@ -209,3 +209,20 @@
   margin-top: 11px;
   margin-bottom: 15px;
 }
+
+/* design for text displayed when cart is empty & user tries to place an order */
+
+.js-text-message-container {
+  background-color: lightyellow;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  text-align: center;
+  animation: fadeOut 2s forwards; /* Define fadeOut animation over 3 seconds */
+  animation-delay: 2s; /* Wait for 3 seconds before starting fade out */
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; } /* Fully visible */
+  100% { opacity: 0; } /* Fully transparent */
+}
