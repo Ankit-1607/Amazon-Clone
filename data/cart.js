@@ -36,13 +36,6 @@ export function removeFromCart(productId){
     return cartItem.productId !== productId;
   });
 
-  // cart.forEach((cartItem) => {
-  //   if(cartItem.productId !== productId){
-  //     newCart.push(cartItem);
-  //   }
-  // })
-  // console.log(cart);
-  // console.log(newCart);
   cart = newCart;
 
   saveToStorage();

@@ -2,11 +2,13 @@ import { previousOrders } from "../data/previous-products.js";
 import { products, getProduct } from "../data/products.js";
 import { getPrevOrdersFromStorage } from "../data/previous-products.js";
 import { getDeliveryDate } from "../scripts/utils/deliveryDate.js";
+import { getDeliveryOption } from "./deliveryOptions.js";
+import { cart, saveToStorage, updateCartQuantity } from "./cart.js";
+
 export function renderOrdersList() {
   getPrevOrdersFromStorage();
   if(!previousOrders) return; // doesn't throw error if there is nothing in previous orders
 
-  console.log("Loading Started...")
   let orderListHTML = '';
 
   previousOrders.forEach((previousOrder) => {
@@ -17,7 +19,6 @@ export function renderOrdersList() {
       let computedProperty = `product_${itemNumber}_id`;
       const productInfo = getProduct(currentProduct[computedProperty]);
       // console.log(products); // products array isn't getting created in DOM since main amazon.js doesn't run for this
-      console.log("here");
       currentProducts.push(productInfo);
       itemNumber++;
     })
@@ -27,6 +28,14 @@ export function renderOrdersList() {
     previousOrder.quantity.forEach((currentProduct) => {
       let computedProperty = `product_${itemNumber}_quantity`;
       currentProductsQuantities.push(currentProduct[computedProperty]);
+      itemNumber++;
+    })
+
+    let currentProductsShippingID = [];
+    itemNumber = 1;
+    previousOrder.shippingDetails.forEach((currentProduct) => {
+      let computedProperty = `product_${itemNumber}_shippingId`;
+      currentProductsShippingID.push(currentProduct[computedProperty]);
       itemNumber++;
     })
 
@@ -43,15 +52,21 @@ export function renderOrdersList() {
             ${currentProduct.name}
           </div>
           <div class="product-delivery-date">
-            Arriving on: ${getDeliveryDate(7)}
+            Delivery date: ${getDeliveryDate(getDeliveryOption(currentProductsShippingID[itemNumber]).deliveryDays)}
           </div>
           <div class="product-quantity">
             Quantity: ${currentProductsQuantities[itemNumber]}
           </div>
-          <button class="buy-again-button button-primary">
+          <button class="buy-again-button button-primary js-buy-again-button"
+          data-product-Id="${currentProduct.id}"
+          data-product-quantity="${currentProductsQuantities[itemNumber]}">
             <img class="buy-again-icon" src="images/icons/buy-again.png">
             <span class="buy-again-message">Buy it again</span>
           </button>
+          <div class="added-to-cart js-added-to-cart-${currentProduct.id}">
+            <img src="images/icons/checkmark.png">
+              Added to cart
+          </div>
         </div>
 
         <div class="product-actions">
@@ -75,7 +90,7 @@ export function renderOrdersList() {
               </div>
               <div class="order-total">
                 <div class="order-header-label">Total:</div>
-                <div>₹ ${previousOrder.orderTotal}</div>
+                <div>₹ ${previousOrder.orderTotal.toFixed(2)}</div>
               </div>
             </div>
 
@@ -91,6 +106,52 @@ export function renderOrdersList() {
         </div>
     `
   })
+
   document.querySelector(".js-orders-grid").innerHTML = orderListHTML;
-  console.log(previousOrders);
+
+  // makes buy again button responsive
+  document.querySelectorAll('.js-buy-again-button').
+    forEach((buyAgainButton) => 
+    {
+      buyAgainButton.addEventListener('click',() => {
+        
+        console.log("added");
+        const productId = buyAgainButton.dataset.productId; // dataset defined in buy again button attributes 
+        const productQuantity = buyAgainButton.dataset.productQuantity;
+        // runs after item added to cart
+        addToCartHere(productId, productQuantity); 
+        document.querySelector('.js-cart-quantity').innerHTML = updateCartQuantity();
+
+        // making 'added to cart' visible and then invisible after 2 seconds
+        document.querySelector(`.js-added-to-cart-${productId}`).classList.add('js-added-to-cart-visible');
+        
+        let timeoutID;
+        // timer starts for disappearing of added message
+        setTimeout(() => {
+            document.querySelector(`.js-added-to-cart-${productId}`).classList.remove('js-added-to-cart-visible');
+            clearTimeout(timeoutID);
+          },2000);
+      })
+    })
+}
+
+function addToCartHere(productId, quantityOfProduct) {
+  let matchingItem;
+    // searching if product already there in cart
+    cart.forEach((cartItem) => { 
+      if(productId === cartItem.productId){
+        matchingItem = cartItem;
+      }
+    });
+    // if product already there..increment quantity else add new item
+    if(matchingItem){
+      matchingItem.quantity += Number(quantityOfProduct);
+    }else{
+      cart.push({
+        productId:productId,
+        quantity: Number(quantityOfProduct),
+        deliveryOptionId: '1' // free delivery - default delivery option
+      });
+    }
+    saveToStorage();
 }

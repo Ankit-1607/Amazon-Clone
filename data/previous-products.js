@@ -1,9 +1,9 @@
 import { emptyMyCurrentOrderDetails, myCurrentOrderDetails } from "./myOrder.js";
 
-export let previousOrders = JSON.parse(localStorage.getItem('previousProducts'));
+export let previousOrders = JSON.parse(localStorage.getItem('previousOrders'));
 
 // just adding 2 previous order to setup the page
-if(previousOrders === null){
+if(!previousOrders){
   previousOrders = [
     {
       "orderID": "20b8b2f6-2cb6-46a6-9a01-c2f93f847892",
@@ -19,8 +19,8 @@ if(previousOrders === null){
       ],
       "quantity": [
         { "product_1_quantity": 1 },
-        { "product_2_quantity": 1 },
-        { "product_3_quantity": 1 }
+        { "product_2_quantity": 3 },
+        { "product_3_quantity": 2 }
       ],
       "orderDate": "Thursday - January 23,2025",
       "orderTotal": 13350.7
@@ -43,7 +43,7 @@ if(previousOrders === null){
       "orderTotal": 4417.6
     }
   ]; 
-  // savePrevOrdersToStorage();
+  savePrevOrdersToStorage();
 }
 
 export function savePrevOrdersToStorage() {

@@ -46,12 +46,12 @@ export function renderpaymentSummary(){
 
     <div class="payment-summary-row">
       <div>Estimated tax (10%):</div>
-      <div class="payment-summary-money">₹${taxCents}</div>
+      <div class="payment-summary-money">₹${taxCents.toFixed(2)}</div>
     </div>
 
     <div class="payment-summary-row total-row">
       <div>Order total:</div>
-      <div class="payment-summary-money">₹${totalCents}</div>
+      <div class="payment-summary-money">₹${totalCents.toFixed(2)}</div>
     </div>
 
     <button class="place-order-button button-primary

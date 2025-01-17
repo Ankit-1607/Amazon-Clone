@@ -1,2 +1,0 @@
-- payment summary vaale box me item number update hona chahiye
-- checkout page ke header update karna h
