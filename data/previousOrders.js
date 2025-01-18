@@ -1,9 +1,8 @@
 import { previousOrders } from "../data/previous-products.js";
 import { products, getProduct } from "../data/products.js";
 import { getPrevOrdersFromStorage } from "../data/previous-products.js";
-import { getDeliveryDate } from "../scripts/utils/deliveryDate.js";
-import { getDeliveryOption } from "./deliveryOptions.js";
 import { cart, saveToStorage, updateCartQuantity } from "./cart.js";
+import { getProductDetails } from "./orderStatus.js";
 
 export function renderOrdersList() {
   getPrevOrdersFromStorage();
@@ -31,11 +30,11 @@ export function renderOrdersList() {
       itemNumber++;
     })
 
-    let currentProductsShippingID = [];
+    let currentProductDeliveryDate = [];
     itemNumber = 1;
-    previousOrder.shippingDetails.forEach((currentProduct) => {
-      let computedProperty = `product_${itemNumber}_shippingId`;
-      currentProductsShippingID.push(currentProduct[computedProperty]);
+    previousOrder.deliveryDates.forEach((currentProduct) => {
+      let computedProperty = `product_${itemNumber}_deliveryDate`;
+      currentProductDeliveryDate.push(currentProduct[computedProperty]);
       itemNumber++;
     })
 
@@ -52,7 +51,7 @@ export function renderOrdersList() {
             ${currentProduct.name}
           </div>
           <div class="product-delivery-date">
-            Delivery date: ${getDeliveryDate(getDeliveryOption(currentProductsShippingID[itemNumber]).deliveryDays)}
+            Delivery date: ${currentProductDeliveryDate[itemNumber]}
           </div>
           <div class="product-quantity">
             Quantity: ${currentProductsQuantities[itemNumber]}
@@ -71,7 +70,8 @@ export function renderOrdersList() {
 
         <div class="product-actions">
           <a href="tracking.html">
-            <button class="track-package-button button-secondary">
+            <button class="track-package-button button-secondary js-track-package-button"
+                data-product-id="${currentProduct.id}">
               Track package
             </button>
           </a>
@@ -133,6 +133,14 @@ export function renderOrdersList() {
           },2000);
       })
     })
+
+  document.querySelectorAll('.js-track-package-button').
+    forEach((trackButton) => {
+      trackButton.addEventListener('click', () => {
+        const thisProductID = trackButton.dataset.productId;
+        getProductDetails(thisProductID);
+      })
+    }) 
 }
 
 function addToCartHere(productId, quantityOfProduct) {
