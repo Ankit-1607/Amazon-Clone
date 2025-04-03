@@ -1,4 +1,4 @@
-import {cart, removeFromCart, updateCartQuantity, updateDeliveryOption} from "../../data/cart.js";
+import {cart, removeFromCart, updateCartQuantity, updateDeliveryOption, updateCartQuantityForElement} from "../../data/cart.js";
 import {products,getProduct} from "../../data/products.js";
 import { deliveryOptions, getDeliveryOption} from "../../data/deliveryOptions.js"; 
 import { renderpaymentSummary } from "./paymentSummary.js";
@@ -28,7 +28,7 @@ export function renderOrderSummary(){
 
       <div class="cart-item-details-grid">
         <img class="product-image"
-          src="${matchingProduct.image}">
+          src="${matchingProduct.image}" alt='product image'>
 
         <div class="cart-item-details">
           <div class="product-name">
@@ -41,12 +41,13 @@ export function renderOrderSummary(){
             <span>
               Quantity: <span class="quantity-label">${cartItem.quantity}</span>
             </span>
-            <span class="update-quantity-link link-primary">
+            <span class="update-quantity-link link-primary js-update-quantity-link" data-product-id="${matchingProduct.id}">
               Update
             </span>
             <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
               Delete
             </span>
+            <div class="js-update-quantity-link-${matchingProduct.id}"></div>
           </div>
         </div>
 
@@ -95,6 +96,35 @@ export function renderOrderSummary(){
 
   document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
 
+  document.querySelectorAll('.js-update-quantity-link').forEach((link) => {
+    link.addEventListener(('click'), () => {
+      const productID = link.dataset.productId;
+      const updateItemSelected = document.querySelector(`.js-update-quantity-link-${productID}`);
+      
+      // Check if the input field already exists
+      const existingInputField = updateItemSelected.querySelector('input[type="number"]');
+
+      if (!existingInputField) {
+        const inputField = createNumberInput();
+        updateItemSelected.appendChild(inputField);
+
+        // event listener for the Enter key press
+        inputField.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+              // Extract the entered number
+              const enteredQuantity = parseInt(inputField.value); 
+
+              updateCartQuantityForElement(productID, enteredQuantity);
+              renderOrderSummary();
+              console.log(enteredQuantity);
+
+              updateItemSelected.removeChild(inputField); 
+          }
+      });
+      }
+    })
+  })
+
   document.querySelectorAll('.js-delete-link').forEach((link) => {
     link.addEventListener('click',() => {
 
@@ -128,6 +158,7 @@ export function renderOrderSummary(){
 }
 
 function cartQuantitySummaryText() {
+  // updates the checkout page summary according to number of elements in cart
   const numOfItems = updateCartQuantity();
   if(numOfItems == 0) {
     document.querySelector(".js-card-quantity-summary").innerHTML = "No items";
@@ -139,10 +170,30 @@ function cartQuantitySummaryText() {
 }
 
 function cartPageTitle() {
+  // updates the checkout page title according to number of elements in cart
   const numOfItems = updateCartQuantity();
   if(numOfItems == 0) {
     document.querySelector(".js-page-title").innerHTML = "Your Amazon Clone Cart is empty";
   } else {
     document.querySelector(".js-page-title").innerHTML = "Review your Cart";
   }
+}
+
+function createNumberInput() {
+  // Create the input element
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.min = 1;
+  input.max = 100;
+  input.placeholder = "Press Enter to update quantity";
+  input.classList.add('update-quantity');
+
+  // event listener to handle invalid input
+  input.addEventListener('input', () => {
+    if (isNaN(input.value)) {
+      input.value = '';
+    }
+  });
+
+  return input;
 }

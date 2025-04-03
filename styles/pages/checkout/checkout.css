@@ -119,6 +119,15 @@
   margin-left: 3px;
 }
 
+.update-quantity {
+  width : 80%;
+  margin : 3px 0px;
+  padding: 2px 5px; 
+  border: 2px solid #510707;
+  border-radius: 3px;
+  font-size: 14px; 
+}
+
 @media (max-width: 1000px) {
   .delivery-options {
     /* grid-column: 1 means this element will be placed

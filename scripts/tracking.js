@@ -4,6 +4,11 @@ import { updateCartQuantity } from "../data/cart.js";
 const thisProductTracks = JSON.parse(localStorage.getItem('thisProductTracks'));
 console.log(thisProductTracks);
 
+// const url = new URL(window.location.href);
+// console.log(url.searchParams.get('orderId')); // add the param in order.html while generating the page
+// console.log(url.searchParams.get('productId'));
+
+
 // fetches products array
 function loadPage() {
   return loadProductsFetch().catch((error) => { // loadProductsFetch() returns a promise

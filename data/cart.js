@@ -73,3 +73,13 @@ export function emptyTheCart() {
 export function isCartEmpty() {
   return (cart.length == 0) ? true:false;
 }
+
+export function updateCartQuantityForElement(productID, enteredQuantity) {
+  cart.forEach((cartItem) => {
+    if(cartItem.productId == productID) {
+      cartItem.quantity = enteredQuantity;
+      saveToStorage();
+      return;
+    }
+  })
+}

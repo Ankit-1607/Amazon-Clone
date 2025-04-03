@@ -113,10 +113,12 @@ export function getProductDetails(productID) {
   
   statusOfOrders.forEach((thisOrder) => {
     const shipped = thisOrder.isShipped;
+    const orderID = thisOrder.orderID;
     thisOrder.deliveryStatusesProds.forEach((thisProduct) => {
       if(thisProduct.productID == productID) {
 
         const thisProductTracks = {
+                              orderID,
                               thisProduct, 
                               shipped
                             };
